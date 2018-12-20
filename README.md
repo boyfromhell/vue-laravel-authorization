@@ -21,7 +21,7 @@ Before Laravel 5.4.23 a window.Laravel global javascript object exists, you coul
 </script>
 ```
 
-Or Like in 5.4.23 and before you can use meta tags:
+Or Like in 5.4.23 and after you can use meta tags:
 
 ```html
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -46,7 +46,7 @@ You can also publish only permissions and/or roles if you don't want to expose a
     ]) !!};
 </script
 ```
-Laravep permission package don't expose by default roles and permissions in Json serialization of user object so you have to apply the following changes to App\User class (apply a Trait):
+Laravel permission package don't expose by default roles and permissions in Json serialization of user object so you have to apply the following changes to App\User class (apply a Trait):
 
 ```php
 Trait ExposePermissions
@@ -72,11 +72,7 @@ Trait ExposePermissions
     {
         $permissions = [];
         foreach (Permission::all() as $permission) {
-            if (Auth::user()->can($permission->name)) {
-                $permissions[$permission->name] = true;
-            } else {
-                $permissions[$permission->name] = false;
-            }
+            $permissions[$permission->name] = (bool)(Auth::user()->can($permission->name));
         }
         return $permissions;
     }
